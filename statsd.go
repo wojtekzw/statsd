@@ -2,6 +2,14 @@ package statsd
 
 import "time"
 
+// Debugger - internal debug values to monitor StatsD Client
+type Debugger struct {
+	MaxBufferLen int
+}
+
+// Debug global variable
+var Debug Debugger
+
 // A Client represents a StatsD client.
 type Client struct {
 	conn   *conn

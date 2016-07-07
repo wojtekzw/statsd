@@ -232,7 +232,12 @@ func (c *conn) closeMetric(tags string) {
 }
 
 func (c *conn) flushIfBufferFull(lastSafeLen int) {
-	if len(c.buf) > c.maxPacketSize {
+	buffLen := len(c.buf)
+	if Debug.MaxBufferLen < buffLen {
+		Debug.MaxBufferLen = buffLen
+	}
+
+	if buffLen > c.maxPacketSize {
 		c.flush(lastSafeLen)
 	}
 }
