@@ -59,7 +59,7 @@ func New(opts ...Option) (*Client, error) {
 //
 // All cloned Clients share the same connection, so cloning a Client is a cheap
 // operation.
-func (c *Client) Clone(opts ...Option) *Client {
+func (c *Client) Clone(opts ...Option) Statser {
 	tf := c.conn.tagFormat
 	conf := &config{
 		Client: clientConfig{
@@ -131,8 +131,13 @@ type Timing struct {
 }
 
 // NewTiming creates a new Timing.
-func (c *Client) NewTiming() Timing {
-	return Timing{start: now(), c: c}
+func (c *Client) NewTiming() Timinger {
+	// var t Timing
+	// t.start = now()
+	// t.c = c
+	// return t
+	t := Timing{start: now(), c: c}
+	return t
 }
 
 // Send sends the time elapsed since the creation of the Timing.

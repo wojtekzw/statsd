@@ -570,12 +570,14 @@ func (s *server) Close() {
 	<-s.closed
 }
 
-func Benchmark(b *testing.B) {
+func BenchmarkRealClient(b *testing.B) {
 	serv := newServer(b, "udp", testAddr, func([]byte) {})
 	c, err := New(Address(serv.addr), FlushPeriod(0))
 	if err != nil {
 		b.Fatal(err)
 	}
+
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		c.Increment(testKey)
 		c.Count(testKey, i)
@@ -583,6 +585,23 @@ func Benchmark(b *testing.B) {
 		c.Timing(testKey, i)
 		c.NewTiming().Send(testKey)
 	}
+	b.StopTimer()
+
 	c.Close()
 	serv.Close()
+}
+
+func BenchmarkFakeClient(b *testing.B) {
+	c := &NoopClient{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		c.Increment(testKey)
+		c.Count(testKey, i)
+		c.Gauge(testKey, i)
+		c.Timing(testKey, i)
+		c.NewTiming().Send(testKey)
+	}
+	b.StopTimer()
+
+	c.Close()
 }
