@@ -591,6 +591,84 @@ func BenchmarkRealClient(b *testing.B) {
 	serv.Close()
 }
 
+func BenchmarkRealClientAndServer(b *testing.B) {
+	c, err := New(Address(":8125"), FlushPeriod(0))
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		c.Increment(testKey)
+		c.Count(testKey, i)
+		c.Gauge(testKey, i)
+		c.Timing(testKey, i)
+		c.NewTiming().Send(testKey)
+	}
+	b.StopTimer()
+
+	c.Close()
+}
+
+
+func BenchmarkRealClientAndServerPerlCompatible_Increment_Gauge(b *testing.B) {
+	c, err := New(Address(":8125"))
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		c.Increment(testKey)
+		//c.Count(testKey, i)
+		c.Gauge(testKey, i)
+		//c.Timing(testKey, i)
+		//c.NewTiming().Send(testKey)
+	}
+	b.StopTimer()
+
+	c.Close()
+}
+
+func BenchmarkRealClientAndServerPerlCompatible_Increment(b *testing.B) {
+	c, err := New(Address(":8125"))
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		c.Increment(testKey)
+		//c.Count(testKey, i)
+		//c.Gauge(testKey, i)
+		//c.Timing(testKey, i)
+		//c.NewTiming().Send(testKey)
+	}
+	b.StopTimer()
+
+	c.Close()
+}
+
+func BenchmarkRealClientAndServerPerlCompatible_Gauge(b *testing.B) {
+	c, err := New(Address(":8125"))
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		//c.Increment(testKey)
+		//c.Count(testKey, i)
+		c.Gauge(testKey, i)
+		//c.Timing(testKey, i)
+		//c.NewTiming().Send(testKey)
+	}
+	b.StopTimer()
+
+	c.Close()
+}
+
+
 func BenchmarkFakeClient(b *testing.B) {
 	c := &NoopClient{}
 	b.ResetTimer()
