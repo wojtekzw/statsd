@@ -109,7 +109,9 @@ func SampleRate(rate float32) Option {
 // replaced but is prepended to the given prefix.
 func Prefix(p string) Option {
 	return Option(func(c *config) {
-		c.Client.Prefix += strings.TrimSuffix(p, ".") + "."
+		if len(p) > 0 {
+			c.Client.Prefix += strings.TrimSuffix(p, ".") + "."
+		}
 	})
 }
 
